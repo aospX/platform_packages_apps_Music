@@ -87,6 +87,7 @@ public class MediaPlaybackActivity extends Activity implements MusicUtils.Defs,
     private Toast mToast;
     private int mTouchSlop;
     private ServiceToken mToken;
+    private boolean mIntentDeRegistered = false;
 
     public MediaPlaybackActivity()
     {
@@ -461,8 +462,11 @@ public class MediaPlaybackActivity extends Activity implements MusicUtils.Defs,
     @Override
     public void onStop() {
         paused = true;
-        mHandler.removeMessages(REFRESH);
-        unregisterReceiver(mStatusListener);
+        if (!mIntentDeRegistered) {
+            mHandler.removeMessages(REFRESH);
+            unregisterReceiver(mStatusListener);
+        }
+        unregisterReceiver(mScreenTimeoutListener);
         MusicUtils.unbindFromService(mToken);
         mService = null;
         super.onStop();
@@ -472,7 +476,6 @@ public class MediaPlaybackActivity extends Activity implements MusicUtils.Defs,
     public void onStart() {
         super.onStart();
         paused = false;
-
         mToken = MusicUtils.bindToService(this, osc);
         if (mToken == null) {
             // something went wrong
@@ -483,6 +486,12 @@ public class MediaPlaybackActivity extends Activity implements MusicUtils.Defs,
         f.addAction(MediaPlaybackService.PLAYSTATE_CHANGED);
         f.addAction(MediaPlaybackService.META_CHANGED);
         registerReceiver(mStatusListener, new IntentFilter(f));
+
+        IntentFilter s = new IntentFilter();
+        s.addAction(Intent.ACTION_SCREEN_ON);
+        s.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(mScreenTimeoutListener, new IntentFilter(s));
+
         updateTrackInfo();
         long next = refreshNow();
         queueNextRefresh(next);
@@ -497,6 +506,9 @@ public class MediaPlaybackActivity extends Activity implements MusicUtils.Defs,
     public void onResume() {
         super.onResume();
         updateTrackInfo();
+        if (mIntentDeRegistered) {
+             paused = false;
+        }
         setPauseButtonImage();
     }
     
@@ -1244,6 +1256,35 @@ public class MediaPlaybackActivity extends Activity implements MusicUtils.Defs,
                 queueNextRefresh(1);
             } else if (action.equals(MediaPlaybackService.PLAYSTATE_CHANGED)) {
                 setPauseButtonImage();
+            }
+        }
+    };
+
+    private BroadcastReceiver mScreenTimeoutListener = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
+                if (mIntentDeRegistered) {
+                    IntentFilter f = new IntentFilter();
+                    f.addAction(MediaPlaybackService.PLAYSTATE_CHANGED);
+                    f.addAction(MediaPlaybackService.META_CHANGED);
+                    f.addAction(Intent.ACTION_SCREEN_ON);
+                    f.addAction(Intent.ACTION_SCREEN_OFF);
+                    registerReceiver(mStatusListener, new IntentFilter(f));
+                    mIntentDeRegistered = false;
+                }
+                    updateTrackInfo();
+                    long next = refreshNow();
+                    queueNextRefresh(next);
+            }
+            else if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) {
+                paused = true;
+
+                if (!mIntentDeRegistered) {
+                    mHandler.removeMessages(REFRESH);
+                    unregisterReceiver(mStatusListener);
+                    mIntentDeRegistered = true;
+                }
             }
         }
     };
