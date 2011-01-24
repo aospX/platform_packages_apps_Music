@@ -1185,7 +1185,11 @@ public class MediaPlaybackActivity extends Activity implements MusicUtils.Defs,
             long pos = mPosOverride < 0 ? mService.position() : mPosOverride;
             long remaining = 1000 - (pos % 1000);
             if ((pos >= 0) && (mDuration > 0)) {
-                mCurrentTime.setText(MusicUtils.makeTimeString(this, pos / 1000));
+                if (pos < mDuration) {
+                    mCurrentTime.setText(MusicUtils.makeTimeString(this, pos / 1000));
+                } else {
+                    mCurrentTime.setText(MusicUtils.makeTimeString(this, mDuration / 1000));
+                }
 
                 if (mService.isPlaying()) {
                     mCurrentTime.setVisibility(View.VISIBLE);
