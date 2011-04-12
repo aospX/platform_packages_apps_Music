@@ -352,8 +352,10 @@ public class MusicPicker extends ListActivity
                 // No cursor, the section doesn't exist so just return 0
                 return 0;
             }
-            
-            return mIndexer.getPositionForSection(section);
+            if(mIndexer != null) {
+                return mIndexer.getPositionForSection(section);
+            }
+            return 0;
         }
 
         public int getSectionForPosition(int position) {

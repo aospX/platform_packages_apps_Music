@@ -655,11 +655,17 @@ public class AlbumBrowserActivity extends ListActivity
         }
         
         public Object[] getSections() {
-            return mIndexer.getSections();
+            if(mIndexer != null) {
+                return mIndexer.getSections();
+            }
+            return null;
         }
         
         public int getPositionForSection(int section) {
-            return mIndexer.getPositionForSection(section);
+            if(mIndexer != null) {
+                return mIndexer.getPositionForSection(section);
+            }
+            return 0;
         }
         
         public int getSectionForPosition(int position) {

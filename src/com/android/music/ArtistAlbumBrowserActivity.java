@@ -845,11 +845,17 @@ public class ArtistAlbumBrowserActivity extends ExpandableListActivity
         }
 
         public Object[] getSections() {
-            return mIndexer.getSections();
+            if(mIndexer != null) {
+                return mIndexer.getSections();
+            }
+            return null;
         }
         
         public int getPositionForSection(int sectionIndex) {
-            return mIndexer.getPositionForSection(sectionIndex);
+            if(mIndexer != null) {
+                return mIndexer.getPositionForSection(sectionIndex);
+            }
+            return 0;
         }
         
         public int getSectionForPosition(int position) {
