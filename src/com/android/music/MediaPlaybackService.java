@@ -1125,7 +1125,10 @@ public class MediaPlaybackService extends Service {
             if (path == null) {
                 return;
             }
-
+            
+            String fileName = getTrackName();
+            Log.e("MediaPlaybackActivity", "AUDIOFILENAME IS : " +fileName);
+            
             // if mCursor is null, try to associate path with a database cursor
             if (mCursor == null) {
 
