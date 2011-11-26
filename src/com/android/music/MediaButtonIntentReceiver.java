@@ -73,11 +73,12 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver {
             int keycode = event.getKeyCode();
             int action = event.getAction();
             long eventtime = event.getEventTime();
+            int buttonId = intent.getIntExtra(MediaPlaybackService.CMDNOTIF, 0);
 
             // single quick press: pause/resume. 
             // double press: next track
             // long press: start auto-shuffle mode.
-            
+
             String command = null;
             switch (keycode) {
                 case KeyEvent.KEYCODE_MEDIA_STOP:
@@ -103,7 +104,7 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver {
 
             if (command != null) {
                 if (action == KeyEvent.ACTION_DOWN) {
-                    if (mDown) {
+                    if (mDown && (buttonId == 0)) {
                         if ((MediaPlaybackService.CMDTOGGLEPAUSE.equals(command) ||
                                 MediaPlaybackService.CMDPLAY.equals(command))
                                 && mLastClickTime != 0 
@@ -121,6 +122,7 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver {
                         // a command.
                         Intent i = new Intent(context, MediaPlaybackService.class);
                         i.setAction(MediaPlaybackService.SERVICECMD);
+                        i.putExtra(MediaPlaybackService.CMDNOTIF, buttonId);
                         if (keycode == KeyEvent.KEYCODE_HEADSETHOOK &&
                                 eventtime - mLastClickTime < 300) {
                             i.putExtra(MediaPlaybackService.CMDNAME, MediaPlaybackService.CMDNEXT);
@@ -133,7 +135,9 @@ public class MediaButtonIntentReceiver extends BroadcastReceiver {
                         }
 
                         mLaunched = false;
-                        mDown = true;
+                        if (buttonId == 0) {
+                            mDown = true;
+                        }
                     }
                 } else {
                     mHandler.removeMessages(MSG_LONGPRESS_TIMEOUT);
