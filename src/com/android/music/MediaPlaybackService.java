@@ -866,8 +866,10 @@ public class MediaPlaybackService extends Service {
                 mCursorCols, MediaStore.Audio.Media.IS_MUSIC + "=1", null, null);
             if (cu == null)
                 i.putExtra("ListSize", Long.valueOf(-1));
-            else
+            else {
                 i.putExtra("ListSize", Long.valueOf(cu.getCount()));
+                cu.close();
+            }
 
         } catch (Exception e) { Log.e(LOGTAG, "Exception: " + e); }
 
