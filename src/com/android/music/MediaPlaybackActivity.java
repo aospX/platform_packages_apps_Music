@@ -1372,12 +1372,13 @@ public class MediaPlaybackActivity extends Activity implements MusicUtils.Defs,
                 Bitmap bm = MusicUtils.getArtwork(MediaPlaybackActivity.this, songid, albumid, false);
                 if (bm == null) {
                     bm = MusicUtils.getArtwork(MediaPlaybackActivity.this, songid, -1);
-                    albumid = -1;
                 }
                 if (bm != null) {
                     numsg = mHandler.obtainMessage(ALBUM_ART_DECODED, bm);
                     mHandler.removeMessages(ALBUM_ART_DECODED);
                     mHandler.sendMessage(numsg);
+                } else {
+                    albumid = -1;
                 }
                 mAlbumId = albumid;
             }
