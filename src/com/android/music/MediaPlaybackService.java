@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2007 The Android Open Source Project
+ * Copyright (c) 2012, Code Aurora Forum. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1128,10 +1129,6 @@ public class MediaPlaybackService extends Service {
             if (path == null) {
                 return;
             }
-            
-            String fileName = getTrackName();
-            Log.e("MediaPlaybackActivity", "AUDIOFILENAME IS : " +fileName);
-            
             // if mCursor is null, try to associate path with a database cursor
             if (mCursor == null) {
 
@@ -1163,6 +1160,8 @@ public class MediaPlaybackService extends Service {
                             mPlayPos = 0;
                         }
                     }
+                    String fileName = getTrackName();
+                    Log.e("MediaPlaybackActivity", "AUDIOFILENAME IS : " +fileName);
                 } catch (UnsupportedOperationException ex) {
                 }
             }
