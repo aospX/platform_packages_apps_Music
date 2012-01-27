@@ -1203,8 +1203,8 @@ public class MediaPlaybackService extends Service {
         if (mPlayer.isInitialized()) {
             // if we are at the end of the song, go to the next song first
             long duration = mPlayer.duration();
-            if (mRepeatMode != REPEAT_CURRENT && duration > 2000 &&
-                mPlayer.position() >= duration - 2000) {
+            if (mRepeatMode != REPEAT_CURRENT && duration > 1000 &&
+                mPlayer.position() >= duration - 1000) {
                 next(true);
             }
 
