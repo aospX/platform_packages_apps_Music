@@ -897,7 +897,7 @@ public class MediaPlaybackActivity extends Activity implements MusicUtils.Defs,
     private void scanBackward(int repcnt, long delta) {
         if(mService == null) return;
         try {
-            if(repcnt == 0) {
+            if((repcnt == 0) || (repcnt == 1)) {
                 mStartSeekPos = mService.position();
                 mLastSeekEventTime = 0;
                 mSeeking = false;
@@ -936,7 +936,7 @@ public class MediaPlaybackActivity extends Activity implements MusicUtils.Defs,
     private void scanForward(int repcnt, long delta) {
         if(mService == null) return;
         try {
-            if(repcnt == 0) {
+            if((repcnt == 0) || (repcnt == 1)) {
                 mStartSeekPos = mService.position();
                 mLastSeekEventTime = 0;
                 mSeeking = false;
