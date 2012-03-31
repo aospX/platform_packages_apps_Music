@@ -463,7 +463,7 @@ public class TrackBrowserActivity extends ListActivity
                         // compilation album
                         fancyName = mTrackCursor.getString(idx);
                     }    
-                    cursor.deactivate();
+                    cursor.close();
                 }
                 if (fancyName == null || fancyName.equals(MediaStore.UNKNOWN_STRING)) {
                     fancyName = getString(R.string.unknown_album_name);
@@ -1100,6 +1100,9 @@ public class TrackBrowserActivity extends ListActivity
             makeNowPlayingCursor();
         }
         private void makeNowPlayingCursor() {
+            if(mCurrentPlaylistCursor != null) {
+                mCurrentPlaylistCursor.close();
+            }
             mCurrentPlaylistCursor = null;
             try {
                 mNowPlaying = mService.getQueue();
