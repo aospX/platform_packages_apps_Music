@@ -464,6 +464,7 @@ public class TrackBrowserActivity extends ListActivity
                         fancyName = mTrackCursor.getString(idx);
                     }    
                     cursor.deactivate();
+                    cursor.close();
                 }
                 if (fancyName == null || fancyName.equals(MediaStore.UNKNOWN_STRING)) {
                     fancyName = getString(R.string.unknown_album_name);
@@ -493,6 +494,7 @@ public class TrackBrowserActivity extends ListActivity
                         fancyName = cursor.getString(0);
                     }
                     cursor.deactivate();
+                    cursor.close();
                 }
             }
         } else if (mGenre != null) {
@@ -508,6 +510,7 @@ public class TrackBrowserActivity extends ListActivity
                     fancyName = cursor.getString(0);
                 }
                 cursor.deactivate();
+                cursor.close();
             }
         }
 
@@ -1308,6 +1311,15 @@ public class TrackBrowserActivity extends ListActivity
         {
             if (mCurrentPlaylistCursor != null)
                 mCurrentPlaylistCursor.deactivate();
+        }
+
+        @Override
+        public void close()
+        {
+            if (mCurrentPlaylistCursor != null) {
+                mCurrentPlaylistCursor.close();
+            }
+            super.close();
         }
 
         @Override
