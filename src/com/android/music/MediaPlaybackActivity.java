@@ -1295,6 +1295,8 @@ public class MediaPlaybackActivity extends Activity implements MusicUtils.Defs,
                     registerReceiver(mStatusListener, new IntentFilter(f));
                     mIntentDeRegistered = false;
                 }
+                    if (mPosOverride > 0)
+                        mPosOverride = -1;
                     updateTrackInfo();
                     long next = refreshNow();
                     queueNextRefresh(next);
